@@ -1,25 +1,64 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Grid } from '@material-ui/core'
+import Header from './component/header';
+import Footer from './component/footer';
+import NewsDetails from './component/newsDetail'
+import MainMenu from './component/mainMenu';
+import { connect } from 'react-redux';
+import { getNews, getNewsDetail } from './redux/data/api';
+import { Route, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  };
+
+  componentDidMount() {
+    const { getNews } = this.props;
+    getNews();
+  }  
+
+
+  render() {
+    const {newsDetail} = this.props;
+
+    return(
+      <Router>
+        <Grid 
+          spacing={2} container
+          direction="row" justify="center"
+          alignItems="center"
         >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+          <Grid item xs={12}>
+            <Header />
+          </Grid>
+          <Grid item xs={12}>
+            <Switch>
+              <Route exact path="/" component={MainMenu} />
+              <Route exact path="/details/:id"  component={NewsDetails} />
+              <Redirect to="/" />
+            </Switch>
+          </Grid>
+          <Grid item xs={12}>
+            <Footer />
+          </Grid>
+        </Grid>
+      </Router>
+    ) 
+  };
+};
 
-export default App;
+const mapStateToProps = state => {
+  const newsReducer = state.data;
+  return {
+    news: newsReducer && newsReducer.news,
+    newsDetail: newsReducer && newsReducer.newsDetail
+  };
+};
+
+const mapDispatchToProps = {
+  getNews, getNewsDetail
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

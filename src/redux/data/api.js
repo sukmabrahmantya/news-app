@@ -1,5 +1,6 @@
 import { newsFns, newsDetailFns } from './action';
 import { Axios } from '../utils';
+import { dummyData } from '../../dummyData';
 
 export function getNewsDetail(data) {
   return dispatch => {
@@ -21,7 +22,7 @@ export function getNews() {
       dispatch(newsFns.success(data))
     })
     .catch(err => {
-      dispatch(newsFns.error(err))
+      dispatch(newsFns.success(dummyData))
     })
   };
 };
